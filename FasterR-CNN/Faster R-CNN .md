@@ -30,7 +30,8 @@ RPN网络输入任意尺寸的图像，输出一系列矩形的目标proposals�
 
 <img src="https://github.com/Lang2412/CV/blob/master/FasterR-CNN/20210312200055.png" style="zoom: 80%;" />
 
-首先图片在输入网络后，依次经过一系列conv+relu得到的feature map。用来给后续进行选取建议框。并且此时坐标依然可以映射回原图。然后在feature map上的每个特征点预测多个region proposals。具体作法是：把每个特征点映射回映射回原图的感受野的中心点当成一个基准点，然后围绕这个基准点选取k个不同scale、aspect ratio的anchor，即选取矩形框。一般对每个锚点选取九个矩形框，3个竖着，3个横着，还有3个正方形。![20210314201652](C:\Users\朗哥哥\Desktop\FasterR-CNN\20210314201652.png)
+首先图片在输入网络后，依次经过一系列conv+relu得到的feature map。用来给后续进行选取建议框。并且此时坐标依然可以映射回原图。然后在feature map上的每个特征点预测多个region proposals。具体作法是：把每个特征点映射回映射回原图的感受野的中心点当成一个基准点，然后围绕这个基准点选取k个不同scale、aspect ratio的anchor，即选取矩形框。一般对每个锚点选取九个矩形框，3个竖着，3个横着，还有3个正方形。
+![20210314201652](https://github.com/Lang2412/CV/blob/master/FasterR-CNN/20210314201652.png)
 
 **划分正负样本**
 
@@ -40,7 +41,7 @@ RPN网络输入任意尺寸的图像，输出一系列矩形的目标proposals�
 
 2.对1中剩余的anchor，如果其与某个标定区域重叠比例大于0.7，记为正样本，可能每个ground true box对应的正样本不止一个，但是每个正样本只可能对应一个ground true box；如果其与任意一个标定区域的重叠比例小于0.3则标定为负样本。
 
-![20210314202604](C:\Users\朗哥哥\Desktop\FasterR-CNN\20210314202604.png)
+![20210314202604](https://github.com/Lang2412/CV/blob/master/FasterR-CNN/20210314202604.png)
 
 **损害函数**
 
