@@ -81,10 +81,12 @@ RPN网络输入任意尺寸的图像，输出一系列矩形的目标proposals�
 
 ### 损失函数
 
-PRN 网络的损失函数为分类交叉熵损失和回归 Smooth L1 损失的总和  
+PRN 网络的损失函数为分类交叉熵损失和回归 Smooth L1 损失的总和
+
 $$
 L(\{p_i\},\{t_i\})=\frac{1}{N_{cls}}\sum L_{cls}(p_i,p_i^*)+\lambda\frac{1}{N_{reg}}\sum p_i^*L_{reg}(t_i,t_i^*)
 $$
+
 **分类交叉熵公式：**
 $$
 \frac{1}{N_{cls}}\sum L_{cls}(p_i,p_i^*)
