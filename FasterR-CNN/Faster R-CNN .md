@@ -14,7 +14,7 @@ https://www.bilibili.com/video/BV1BK41157Vs?p=7
 
 https://github.com/bubbliiiing/faster-rcnn-pytorch
 
-【主要架构】：
+## 【主要架构】：
 
 Faster R-CNN主要两个模块组成。第一个模块是提议区域的深度全卷积网络。第二个模块是使用提议区域的Fast R-CNN检测器。是典型的Two-stage检测算法。
 
@@ -46,7 +46,7 @@ Faster R-CNN主要两个模块组成。第一个模块是提议区域的深度�
 
 
 
-**Region Proposal Networks**
+## Region Proposal Networks
 
 RPN网络输入任意尺寸的图像，输出一系列矩形的目标proposals，每个proposal都带有一个objectness分数。
 
@@ -57,7 +57,7 @@ RPN网络输入任意尺寸的图像，输出一系列矩形的目标proposals�
 
 ![20210314201652](./img/20210314201652.png)
 
-**划分正负样本**
+### 划分正负样本
 
 考察训练集中的每张图像（含有人工标定的ground true box） 的所有anchor，对每一个anchor使用一个二分类的标签。
 
@@ -67,5 +67,64 @@ RPN网络输入任意尺寸的图像，输出一系列矩形的目标proposals�
 
 ![20210314202604](./img/20210314202604.png)
 
-**损失函数**
+### 损失函数
+
+PRN 网络的损失函数为分类交叉熵损失和回归 Smooth L1 损失的总和  
+$$
+L(\{p_i\},\{t_i\})=\frac{1}{N_{cls}}\sum L_{cls}(p_i,p_i^*)+\lambda\frac{1}{N_{reg}}\sum p_i^*L_{reg}(t_i,t_i^*)
+$$
+**分类交叉熵公式：**
+$$
+\frac{1}{N_{cls}}\sum L_{cls}(p_i,p_i^*)
+$$
+RPN 网络中的分类器将候选框分为前景 (foreground)和背景 (background)  ,分别标记为1和0，在训练的过程中选择一定数量的候选框，N~cls~表示候选框数量。p~i~为==预测==目标的概率，p~i~^*^为==实际==目标的概率。
+$$
+\begin{equation}
+p_i^*=\left\{
+\begin{aligned}
+0 \qquad Negative label\\
+y \qquad Positive label\\
+\end{aligned}
+\right.
+\end{equation}
+$$
+$L_{cls}(p_i,p_i^*)$代表$p_i$和$p_i^*$的对数损失，定义为：
+$$
+L_{cls}(p_i,p_i^*)=-log[p_ip_i^*+(1-p_i)(1-p_i^*)]
+$$
+**回归$SmoothL_1$损失**：
+$$
+\lambda\frac{1}{N_{reg}}\sum p_i^*L_{reg}(t_i,t_i^*)
+$$
+$t_i$为候选框相对于目标所在的真实框的==预测==的偏移量 ；
+
+$t_i^*$为候选框相对于目标所在的真实框的==实际==的偏移量 。
+
+对$$t_i$$和$$t_i^*$$的定义如下：
+$$
+t_i=t_{xi}+t_{yi}+t_{wi}+t_{hi} \\
+t_i^*=t_{xi}^*+t_{yi}^*+t_{wi}^*+t_{hi}^*
+$$
+其中x,y,w,h分别为候选框左上角坐标(x,y),候选框的宽w和高h。
+$$
+t_x=\frac{x-x_a}{w_a},t_y=\frac{y-y_a}{h_a} \\
+t_w=log(\frac{w}{w_a}),t_h=log(\frac{h}{h_a}) \\
+t_x^*=\frac{x^*-x_a}{w},t_y^*=\frac{y^*-y_a}{h_a} \\
+t_w^*=log(\frac{w^*}{w_a}),t=log(\frac{h^*}{h_a})
+$$
+$$L_{reg}$$为回归损失，$$SmoothL_1$$函数记为$$R$$,则定义：
+$$
+L_{reg}(t,t_i^*)=R(t_i-t_i^*) 
+$$
+
+$$
+\begin{equation}
+R(t_i-t_i^*)=SmoothL_1(t_i-t_i^*)=\left\{
+\begin{aligned}
+0.5x^2,if||x||<1 \\
+||x||-0.5,else \\
+\end{aligned}
+\right.
+\end{equation}
+$$
 
