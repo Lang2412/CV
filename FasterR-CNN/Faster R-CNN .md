@@ -18,7 +18,7 @@ https://github.com/bubbliiiing/faster-rcnn-pytorch
 
 Faster R-CNN主要两个模块组成。第一个模块是提议区域的深度全卷积网络。第二个模块是使用提议区域的Fast R-CNN检测器。是典型的Two-stage检测算法。
 
-![20210321202826](.\img\20210321202826.png)
+![20210321202826](./img/20210321202826.png)
 
 流程：输入数据（image input) --------> 卷积层提取特征，得到feature map ------>RPN层，输出比较精确ROIs------>对输出ROIs映射到ROIping的feature map进行回归分类。
 
